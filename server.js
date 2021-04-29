@@ -24,7 +24,26 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/:date",function(req,res){
+  var dateString = req.params.date;
+  if (/\d{5,}/.test(dateString)) {
+    const dateInt = parseInt(dateString);
+    res.json({unix: dateInt, utc: new Date(dateInt).toUTCString()});
+  }
+  else{
+    var dateObj = new Date(dateString);
+    if(dateObj.toString() == "Invalid Date"){
+      res.json({ error : "Invalid Date" });
+    }else{
+      res.json({unix: dateObj.valueOf(), utc: dateObj.toUTCString()});
+    }
+    
+  }
+})
 
+app.get("/api/",function(req,res){
+  res.json({unix: Date.now(), utc: Date() })
+});
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
